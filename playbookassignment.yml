@@ -1,0 +1,31 @@
+---
+- name: Configure tomcat
+  hosts: all
+  tasks:
+    - name: Install tomcat10 and tomcat10-admin
+      apt:
+        name: "{{item.a}}"
+        state: "{{item.b}}"
+        update_cache: "{{item.c}}"
+      with_items:
+        - {a: tomcat10,b: present,c: yes}
+        - {a: tomcat10-admin,b: present,c: yes}
+      notify: Check url response
+    - name: Copy tomcat-users.xml
+      copy:
+          src: tomcat-users.xml
+          dest: /etc/tomcat10
+      notify: Restart tomcat
+  handlers:
+      - name: Restart tomcat
+        service:
+          name: tomcat10
+          state: restarted
+      - name: Check url response
+        uri:
+          url: "{{item}}"
+          status_code: 200
+        with_items:
+          - http://172.31.21.105
+          - http://172.31.29.214
+

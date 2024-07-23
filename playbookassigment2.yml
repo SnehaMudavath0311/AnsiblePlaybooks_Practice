@@ -1,0 +1,24 @@
+---
+- name: Install Nginx and replace index.html
+  hosts: all
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+      notify: Restart Nginx
+
+    - name: Replace index.html
+      copy:
+        src: /tmp/index.html
+        dest: /usr/share/nginx/html/index.html
+      notify: Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+...
+
