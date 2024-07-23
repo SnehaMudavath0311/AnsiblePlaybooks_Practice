@@ -1,0 +1,19 @@
+---
+- name: implenting tags
+  hosts: all
+  tasks:
+    - name: Install tree
+      apt:
+        name: tree
+        state: present
+        update_cache: yes
+      tags: trees_installation
+    - name: User creation
+      user:
+        name: anu
+        password: intelliqit
+      tags: user_creation
+    - name: Copy passd file
+      copy:
+        src: /etc/passwd
+        dest: /tmp
